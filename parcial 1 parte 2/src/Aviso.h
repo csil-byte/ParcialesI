@@ -24,7 +24,7 @@ int isEmpty;
 int idCliente;
 }typedef Aviso;
 
-int avisoAltaForzada (Aviso* pAviso, int lenAviso, int indiceAviso, int* idAviso, int rubro, char* textoAviso, int idCliente);
+int avisoAltaForzada (Aviso* pAviso, int lenAviso, int indiceAviso, int* idAviso, int rubro, char* textoAviso, int idCliente, int estado);
 int initAviso(Aviso* pAviso, int limit);
 int aviso_validacionAlta (Aviso* pAviso, int len);
 int aviso_buscarLibreRef(Aviso* pAviso, int limit, int *pIndex);

@@ -20,7 +20,7 @@
 * \param list: array de estructura a utilizar | limite de estructura | indice | id | nombre | apellido | cuit
 * \return int Return (-1) if Error [Invalid length or NULL pointer] - (0) if Ok
 */
-int avisoAltaForzada (Aviso* pAviso, int lenAviso, int indiceAviso, int* idAviso, int rubro, char* textoAviso, int idCliente)
+int avisoAltaForzada (Aviso* pAviso, int lenAviso, int indiceAviso, int* idAviso, int rubro, char* textoAviso, int idCliente, int estado)
 {
 	int retorno = 0;
 	Aviso bufferAviso;
@@ -32,7 +32,7 @@ int avisoAltaForzada (Aviso* pAviso, int lenAviso, int indiceAviso, int* idAviso
 		bufferAviso.idCliente = idCliente;
 		bufferAviso.idAviso = aviso_generarIdNuevo();
 		bufferAviso.isEmpty = FALSE;
-		bufferAviso.estado = TRUE;
+		bufferAviso.estado = estado;
 		pAviso[indiceAviso] = bufferAviso;
 		retorno = 0;
 	}
@@ -119,8 +119,8 @@ int aviso_printByIndex(Aviso* pAviso, int limit, int index)
 			if(pAviso[index].isEmpty == FALSE)
 			{
 				retorno = 0;
-				printf("-ID de cliente: %d - ID de aviso: %d - Rubro: %d - Texto: %s\n"
-				,pAviso[index].idCliente, pAviso[index].idAviso, pAviso[index].rubro, pAviso[index].textoAviso);
+				printf("-ID de cliente: %d - ID de aviso: %d - Rubro: %d - Estado del aviso: %d - Texto: %s\n"
+				,pAviso[index].idCliente, pAviso[index].idAviso, pAviso[index].rubro, pAviso[index].estado, pAviso[index].textoAviso);
 			}
 		}
 		return retorno;

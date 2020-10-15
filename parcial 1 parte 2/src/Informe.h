@@ -24,11 +24,22 @@
 
 
 int printClienteInforme(Cliente* pListClientes, int len, Aviso* pAviso, int limiteAviso);
-int getCantidadAvisosPorCliente(Cliente* pListClientes, int len, Aviso* pAviso, int limiteAviso, int id);
+
+
+int getCantidadAvisosTotalesPorCliente(Cliente* pListClientes, int len, Aviso* pAviso, int limiteAviso, int id);
 int getClienteConMasAvisos (Cliente* pListClientes, int limiteClientes, Aviso* pAviso, int limiteAviso);
+
+int getClienteConMasAvisosActivos (Cliente* pListClientes, int limiteClientes, Aviso* pAviso, int limiteAviso);
+int getCantidadAvisosActivosPorCliente(Cliente* pListClientes, int len, Aviso* pAviso, int limiteAviso, int id);
+
+int getClienteConMasAvisosPausados (Cliente* pListClientes, int limiteClientes, Aviso* pAviso, int limiteAviso);
+int getCantidadAvisosPausadosPorCliente(Cliente* pListClientes, int len, Aviso* pAviso, int limiteAviso, int id);
 int getCantidadAvisosPausados (Aviso* pAviso, int limiteAvisos);
+
 int getRubroConMasAvisos (Cliente* pListClientes, int limiteClientes, Aviso* pAviso, int limiteAviso);
 int getSubMenu(Cliente* pListClientes, int limiteClientes, Aviso* pAviso, int limiteAviso);
+
+
 
 
 

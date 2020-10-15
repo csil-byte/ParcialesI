@@ -34,15 +34,16 @@ int main(void) {
 	clienteAltaForzada (pListClientes, QTY_CLIENTES, 3, &idCliente, "Ricky", "Martin", "04-00000000-4");
 	clienteAltaForzada (pListClientes, QTY_CLIENTES, 4, &idCliente, "David", "Bisbal", "05-00000000-5");
 
-	avisoAltaForzada (pAviso, QTY_AVISO, 0, &idAviso, 1, "Hola, este es mi primer aviso",                0);
-	avisoAltaForzada (pAviso, QTY_AVISO, 1, &idAviso, 1, "Bueno, a ver cuando se termina la cuarentena", 1);
-	avisoAltaForzada (pAviso, QTY_AVISO, 2, &idAviso, 5, "Bah, qcyo, está bueno a veces",                1);
-	avisoAltaForzada (pAviso, QTY_AVISO, 3, &idAviso, 1, "A ver si apruebo",                             1);
-	avisoAltaForzada (pAviso, QTY_AVISO, 4, &idAviso, 2, "Aviso random generado",                        2);
-	avisoAltaForzada (pAviso, QTY_AVISO, 5, &idAviso, 2, "Donnie Darko no es tan buena peli como dicen", 3);
-	avisoAltaForzada (pAviso, QTY_AVISO, 6, &idAviso, 3, "Casi último aviso",                            4);
-	avisoAltaForzada (pAviso, QTY_AVISO, 7, &idAviso, 3, "Casi casi último aviso",                       4);
-	avisoAltaForzada (pAviso, QTY_AVISO, 8, &idAviso, 3, "Ultimo aviso",                                 4);
+	avisoAltaForzada (pAviso, QTY_AVISO, 0, &idAviso, 1, "Hola, este es mi primer aviso",                0, 1);
+	avisoAltaForzada (pAviso, QTY_AVISO, 1, &idAviso, 1, "Bueno, a ver cuando se termina la cuarentena", 1, 0);
+	avisoAltaForzada (pAviso, QTY_AVISO, 2, &idAviso, 5, "Bah, qcyo, está bueno a veces",                1, 1);
+	avisoAltaForzada (pAviso, QTY_AVISO, 3, &idAviso, 1, "A ver si apruebo",                             1, 1);
+	avisoAltaForzada (pAviso, QTY_AVISO, 4, &idAviso, 2, "Aviso random generado",                        1, 1);
+	avisoAltaForzada (pAviso, QTY_AVISO, 5, &idAviso, 2, "Donnie Darko no es tan buena peli como dicen", 3, 1);
+	avisoAltaForzada (pAviso, QTY_AVISO, 6, &idAviso, 3, "Casi último aviso",                            4, 0);
+	avisoAltaForzada (pAviso, QTY_AVISO, 7, &idAviso, 3, "Casi casi último aviso",                       4, 0);
+	avisoAltaForzada (pAviso, QTY_AVISO, 8, &idAviso, 3, "Ultimo aviso",                                 4, 0);
+	avisoAltaForzada (pAviso, QTY_AVISO, 9, &idAviso, 3, "Aviso random generado",                        2, 0);
 
 	do {
 		getMainMenu(&menu);
