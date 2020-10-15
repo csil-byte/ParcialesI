@@ -84,7 +84,7 @@ int getMainMenu(int* menu)
 */
 int cliente_generarIdNuevo(void)
 	{
-	    static int id= 0;
+	    static int id= -1;
 	    id = id+1;
 	    return id;
 	}
@@ -102,7 +102,7 @@ int cliente_printByIndex(Cliente* pListClientes, int limit, int index)
 		{
 			retorno = 0;
 
-			printf("ID de cliente: %d - Nombre de cliente: %s  - Apellido de cliente: %s - Cuit: %s \n"
+			printf("\n==========ID de cliente: %d - Nombre de cliente: %s  - Apellido de cliente: %s - Cuit: %s========== \n"
 					,pListClientes[index].idCliente, pListClientes[index].nombreCliente, pListClientes[index].apellidoCliente, pListClientes[index].cuitCliente );
 		}
 	}
@@ -120,7 +120,6 @@ int addCliente(Cliente* pListClientes, int len)
 {
 	int retorno = -1;
 	int indice;
-
 	Cliente bufferList;
 
 	if ( pListClientes != NULL && len > 0  && (cliente_buscadorIndiceLibre (pListClientes, QTY_CLIENTES)  > -1) )
@@ -171,7 +170,7 @@ int cliente_validacionAlta (Cliente* pListClientes, int len)
 * \param list Employee* | param len int | param id int
 * \return Return employee index position or (-1) if [Invalid length or NULL pointer received or employee not found]
 */
-int findClienteById(Cliente *pListClientes, int len, int id) //no funca
+int findClienteById(Cliente *pListClientes, int len, int id)
 {
 	int retorno = -1;
 
@@ -214,24 +213,30 @@ int cliente_modificar (Cliente* pListClientes, int limite)
 {
 	int retorno = -1;
 	int indiceAModificar;
+	int confirmacion;
 	Cliente bufferList;
 
 	if (cliente_validacionAlta (pListClientes, QTY_CLIENTES) == 0 && pListClientes != NULL && limite > 0 &&
-			utn_getNumero("Ingrese el ID que desea modificar\n", "Error, ingrese una opción válida\n", &bufferList.idCliente,2,INT_MAX,1) == 0 &&
+			utn_getNumero("Ingrese el ID que desea modificar\n", "Error, ingrese una opción válida\n", &bufferList.idCliente,2,INT_MAX,0) == 0 &&
 			findClienteById (pListClientes, QTY_CLIENTES, bufferList.idCliente) > -1  )
 	{
 		indiceAModificar = findClienteById (pListClientes, QTY_CLIENTES, bufferList.idCliente);
 		cliente_printByIndex(pListClientes, QTY_CLIENTES, indiceAModificar);
-		if ((pListClientes[indiceAModificar].isEmpty == FALSE &&
+		if (utn_getNumero("\n¿Está seguro que desea modificar a este cliente?\n 0- Si \n 1- No\n", "Error, ingresar una opción válida\n", &confirmacion,2,1,0) == 0)
+		{
+			if ((pListClientes[indiceAModificar].isEmpty == FALSE &&
 				utn_getNombre("\n Nombre?","\nError",bufferList.nombreCliente,2,NAME) == 0 ) &&
 				utn_getNombre("\n Apellido?","\nError",bufferList.apellidoCliente,2,NAME) == 0 &&
 				utn_getCuit("Ingrese su cuit\n", "Error, ingrese un CUIT válido \n", bufferList.cuitCliente, 2, CUIT) == 0)
-		{
-			bufferList.isEmpty = FALSE;
-			pListClientes[indiceAModificar] = bufferList;
-			cliente_printByIndex(pListClientes, QTY_CLIENTES, indiceAModificar);
-			retorno = 0;
-		}}
+			{
+				bufferList.isEmpty = FALSE;
+				pListClientes[indiceAModificar] = bufferList;
+				cliente_printByIndex(pListClientes, QTY_CLIENTES, indiceAModificar);
+			}
+		}
+		printf("\n El cliente ha sido modificado. \n");
+		retorno = 0;
+	}
 	return retorno;
 }
 

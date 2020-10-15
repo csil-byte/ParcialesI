@@ -20,14 +20,16 @@
 #define TEXTO_AVISO 64
 #define DIRECCION 100
 #define RUBRO 7
+#define LIMITEINDICE 10
 
 
 int printClienteInforme(Cliente* pListClientes, int len, Aviso* pAviso, int limiteAviso);
-int getCantidadAvisosPorCliente(Cliente* pListClientes, int len, Aviso* pAviso, int indice, int limiteAviso);
+int getCantidadAvisosPorCliente(Cliente* pListClientes, int len, Aviso* pAviso, int limiteAviso, int id);
 int getClienteConMasAvisos (Cliente* pListClientes, int limiteClientes, Aviso* pAviso, int limiteAviso);
 int getCantidadAvisosPausados (Aviso* pAviso, int limiteAvisos);
 int getRubroConMasAvisos (Cliente* pListClientes, int limiteClientes, Aviso* pAviso, int limiteAviso);
 int getSubMenu(Cliente* pListClientes, int limiteClientes, Aviso* pAviso, int limiteAviso);
+
 
 
 #endif /* INFORME_H_ */

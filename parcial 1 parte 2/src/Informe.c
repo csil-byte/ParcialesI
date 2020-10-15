@@ -27,15 +27,13 @@ int printClienteInforme(Cliente* pListClientes, int len, Aviso* pAviso, int limi
 		{
 			if (pListClientes[i].isEmpty == FALSE)
 			{
-				printf("\nID de cliente: %d - Nombre de cliente: %s - Apellido de cliente: %s - Cuit: %s\n"
-						,pListClientes[i].idCliente, pListClientes[i].nombreCliente, pListClientes[i].apellidoCliente, pListClientes[i].cuitCliente );
+				cliente_printByIndex(pListClientes, QTY_CLIENTES, i);
 
 				for (int j = 0; j < limiteAviso ; j++)
 				{
 					if(pAviso[j].isEmpty == FALSE && pAviso[j].estado == TRUE &&  pListClientes[i].idCliente == pAviso[j].idCliente)
 					{
-						printf("ID de cliente: %d - ID de aviso: %d - Rubro: %d - Texto: %s \n"
-								,pAviso[j].idCliente, pAviso[j].idAviso, pAviso[j].rubro, pAviso[j].textoAviso);
+						aviso_printByIndex(pAviso, QTY_AVISO, j);
 					}
 				}
 				retorno = 0;
@@ -49,21 +47,29 @@ int printClienteInforme(Cliente* pListClientes, int len, Aviso* pAviso, int limi
 * \param list Aviso* | \param length int | pList Clientes | int limiteClientes | int indice
 * \return [-1] if no clients have been added and [0] if there is at least one.
 */
-int getCantidadAvisosPorCliente(Cliente* pListClientes, int len, Aviso* pAviso, int indice, int limiteAviso)
+int getCantidadAvisosPorCliente(Cliente* pListClientes, int len, Aviso* pAviso, int limiteAviso, int id)
 {
 	int retorno = -1;
-	int cantidadAvisos = 0;
+	int contadorAvisos = 0;
 
-	if (cliente_validacionAlta (pListClientes, QTY_CLIENTES) == 0 && pListClientes != NULL &&  len > 0 && pAviso != NULL && limiteAviso > 0 && pListClientes[indice].isEmpty == FALSE)
+	if (cliente_validacionAlta (pListClientes, QTY_CLIENTES) == 0 && pListClientes != NULL &&  len > 0 && pAviso != NULL && limiteAviso > 0)
 	{
-		for (int j = 0; j < limiteAviso ; j++)
+		for (int i = 0; i < len; i++)
 		{
-			if(pAviso[j].isEmpty == FALSE && pAviso[j].estado == TRUE &&  pListClientes[indice].idCliente == pAviso[j].idCliente)
+			if (pListClientes[i].isEmpty == FALSE && pListClientes[i].idCliente == id)
 			{
-				cantidadAvisos++;
+				for (int j = 0; j < limiteAviso ; j++)
+				{
+					if(pAviso[j].isEmpty == FALSE && pAviso[j].estado == TRUE &&  pListClientes[i].idCliente == pAviso[j].idCliente)
+					{
+						contadorAvisos++;
+					}
+				}
+
 			}
 		}
-		retorno = cantidadAvisos;
+
+		retorno = contadorAvisos;
 	}
 	return retorno;
 }
@@ -77,24 +83,38 @@ int getClienteConMasAvisos (Cliente* pListClientes, int limiteClientes, Aviso* p
 	int retorno = 0;
 	int totalAvisos;
 	int maxAvisos = 0;
-	int indice;
-	int flagAvisos = 0;
+	int a;
+	int idMaximos[LIMITEINDICE];
 
 	if (pListClientes != NULL && pAviso != NULL && limiteClientes > 0 && limiteAviso > 0)
 	{
+		a = 0;
 		for (int i = 0; i < limiteClientes && pListClientes[i].isEmpty == FALSE; i++)
 		{
-			totalAvisos = (getCantidadAvisosPorCliente(pListClientes, QTY_CLIENTES, pAviso, i, QTY_AVISO));
-			if (flagAvisos == 0 || totalAvisos > maxAvisos )
+			totalAvisos = (getCantidadAvisosPorCliente(pListClientes, QTY_CLIENTES, pAviso, QTY_AVISO, i));
+			if (i == 0 || totalAvisos > maxAvisos )
 			{
-				flagAvisos = 1;
 				maxAvisos = totalAvisos;
-				indice = i;
-
+				idMaximos[a] = i;
+			}
+			else if ( totalAvisos == maxAvisos )
+			{
+				a++;
+				idMaximos[a] = i;
 			}
 		}
-		cliente_printByIndex(pListClientes, QTY_CLIENTES, indice);
-		printf("Este cliente tiene %d avisos \n", maxAvisos);
+		a++;
+		idMaximos[a] = -1;
+		printf("CLIENTE CON MÁS AVISOS:\n");
+		for (a = 0; a < LIMITEINDICE ; a++)
+		{
+			if (idMaximos[a] == -1)
+			{
+				break;
+			}
+			cliente_printByIndex(pListClientes, QTY_CLIENTES, (findClienteById(pListClientes, QTY_CLIENTES, idMaximos[a]))  );
+		}
+		printf("La cantidad de avisos son: %d \n", maxAvisos);
 		retorno = 0;
 	}
 	return retorno;
@@ -127,19 +147,17 @@ int getCantidadAvisosPausados (Aviso* pAviso, int limiteAvisos)
 * \param list Aviso* | \param length int | pList Clientes | int limiteClientes |
 * \return [-1] if parameters are null | [0] if everything ok
 */
-int getRubroConMasAvisos (Cliente* pListClientes, int limiteClientes, Aviso* pAviso, int limiteAviso)
-{
+int getRubroConMasAvisos(Cliente *pListClientes, int limiteClientes, Aviso *pAviso, int limiteAviso) {
 	int retorno = -1;
-	int j = 0;
-	int i = 0;
-	int flag = 0;
-	int k = 0;
+	int j;
+	int i;
+	int k;
 	int a = 0;
 	int rubros[RUBRO];
-	int rubroMaxCantidad = 0;
+	int rubroMaxCantidad;
 	int rubroMaxFinal[10];
 
-	if (aviso_validacionAlta (pAviso, QTY_AVISO)== 0 && pListClientes != NULL && pAviso != NULL && limiteClientes > 0 && limiteAviso > 0)
+	if (aviso_validacionAlta(pAviso, QTY_AVISO) == 0 && pListClientes != NULL && pAviso != NULL && limiteClientes > 0 && limiteAviso > 0)
 	{
 		for (j = 1; j < RUBRO; j++)
 		{
@@ -148,25 +166,24 @@ int getRubroConMasAvisos (Cliente* pListClientes, int limiteClientes, Aviso* pAv
 			{
 				if (pAviso[i].rubro == j)
 				{
-					rubros[j]= k++;
+					rubros[j] = k++;
 				}
 			}
-			if (flag == 0 || k > rubroMaxCantidad)
+			if (j == 1 || k > rubroMaxCantidad)
 			{
-				flag = 1;
 				rubroMaxCantidad = k;
 				rubroMaxFinal[a] = j;
-				retorno = 0; }
-			else if (flag == 1 && k == rubroMaxCantidad)
+			}
+			else if (j != 1 && k == rubroMaxCantidad)
 			{
 				a++;
-				rubroMaxFinal[a] = j;}
+				rubroMaxFinal[a] = j;
+			}
 		}
-		for (a = 0; a < 5 && rubroMaxFinal[a] > 0 && rubroMaxFinal[a] < RUBRO ; a++)
+		for (a = 0; a < 5 && rubroMaxFinal[a] > 0 && rubroMaxFinal[a] < RUBRO && (rubroMaxFinal[a] != rubroMaxFinal[a+1]) ; a++)
 		{
 			printf("===========EL RUBRO CON MÁS CANTIDAD ES: %d===================\n", rubroMaxFinal[a]);
 		}
-
 		retorno = 0;
 	}
 	return retorno;
@@ -208,3 +225,7 @@ int getSubMenu(Cliente* pListClientes, int limiteClientes, Aviso* pAviso, int li
 	}
 	return retorno;
 }
+
+
+
+

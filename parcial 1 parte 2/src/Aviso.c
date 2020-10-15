@@ -119,8 +119,7 @@ int aviso_printByIndex(Aviso* pAviso, int limit, int index)
 			if(pAviso[index].isEmpty == FALSE)
 			{
 				retorno = 0;
-
-				printf("ID de cliente: %d - ID de aviso: %d - Rubro: %d - Texto: %s \n   \n"
+				printf("-ID de cliente: %d - ID de aviso: %d - Rubro: %d - Texto: %s\n"
 				,pAviso[index].idCliente, pAviso[index].idAviso, pAviso[index].rubro, pAviso[index].textoAviso);
 			}
 		}
@@ -132,8 +131,8 @@ int aviso_printByIndex(Aviso* pAviso, int limit, int index)
 */
 int aviso_generarIdNuevo(void)
 	{
-	    static int id= 0;
-	    id = id+1;
+		static int id= -1;
+		id = id+1;
 	    return id;
 	}
 /* findAvisoById
@@ -180,13 +179,13 @@ int aviso_alta (Aviso* pAviso, int limiteAviso, Cliente* pListClientes, int limi
 
 	if (cliente_validacionAlta (pListClientes, QTY_CLIENTES) == 0 && pAviso != NULL  && pListClientes != NULL && limiteAviso >0 && limiteClientes >0)
 	{
-		if ((utn_getNumero("Ingresar el ID del cliente \n", "ID de Cliente incorrecto, ingrese un id válido\n", &bufferAviso.idCliente ,2,1000000,1) == 0) &&
+		if ((utn_getNumero("Ingresar el ID del cliente \n", "ID de Cliente incorrecto, ingrese un id válido\n", &bufferAviso.idCliente ,2,1000000,0) == 0) &&
 				(findClienteById(pListClientes, QTY_CLIENTES, bufferAviso.idCliente) > -1) )
 		{
 			if (aviso_buscarLibreRef (pAviso, QTY_AVISO, &indice) == 0)
 			{
 				if (utn_getNumero("Ingresar el rubro\n", "Rubro incorrecto, ingrese un rubro válido\n", &bufferAviso.rubro,2,RUBRO,1) == 0 &&
-						utn_getTexto ("Ingresar el texto para su aviso\n", "Error, ingrese un texto válido\n", bufferAviso.textoAviso,2, TEXTO_AVISO) == 0   )
+					utn_getTexto ("Ingresar el texto para su aviso\n", "Error, ingrese un texto válido\n", bufferAviso.textoAviso,2, TEXTO_AVISO) == 0   )
 				{
 					pAviso[indice] = bufferAviso;
 					pAviso[indice].idAviso = aviso_generarIdNuevo();
@@ -223,15 +222,14 @@ int aviso_modificarEstado (Aviso* pAviso, int lenAviso, Cliente* pListClientes, 
 
 	if ((aviso_validacionAlta (pAviso, QTY_AVISO)== 0) && pAviso != NULL && lenAviso > 0)
 	{
-		if (((utn_getNumero("Ingresar el ID del aviso cuyo estado desea modificar \n", "Error, ingresar un id válido\n", &bufferId,2,100000,1))== 0) && findAvisoById(pAviso, QTY_AVISO, bufferId) > -1)
+		if (((utn_getNumero("Ingresar el ID del aviso cuyo estado desea modificar \n", "Error, ingresar un id válido\n", &bufferId,2,100000,0))== 0) && findAvisoById(pAviso, QTY_AVISO, bufferId) > -1)
 		{
 			id = bufferId;
 			indice = findAvisoById(pAviso, QTY_AVISO, id);
 			aviso_printByIndex(pAviso, QTY_AVISO, indice);
 			if(utn_getNumero("¿Que modificación desea hacer?\n 0- Pausar aviso \n 1- Activar aviso\n", "Error, ingresar una opción válida\n", &bufferEstado,2,1,0) == 0 &&
-					utn_getNumero("¿Está seguro que desea modificar?\n 0- Si \n 1- No\n", "Error, ingresar una opción válida\n", &confirmacion,2,1,0) == 0)
+				utn_getNumero("¿Está seguro que desea modificar?\n 0- Si \n 1- No\n", "Error, ingresar una opción válida\n", &confirmacion,2,1,0) == 0)
 			{
-
 				estado = bufferEstado;
 				switch(confirmacion)
 				{
@@ -283,9 +281,10 @@ int removeClienteConAvisos(Cliente* pListClientes, int limiteClientes, Aviso* pA
 	int retorno = -1;
 	int bufferIndex;
 	int bufferId;
+	int confirmacion;
 
 	if( cliente_validacionAlta (pListClientes, QTY_CLIENTES) == 0 && pListClientes != NULL && pAviso != NULL && limiteClientes > 0 && limiteAviso > 0 &&
-		utn_getNumero("Ingrese el ID de la cliente que desea eliminar\n", "Error, ingrese un ID válido\n", &bufferId,2,1000000000,1) == 0 && bufferId > -1 &&
+		utn_getNumero("Ingrese el ID del cliente que desea eliminar\n", "Error, ingrese un ID válido\n", &bufferId,2,1000000000,0) == 0 && bufferId > -1 &&
 		findClienteById(pListClientes, QTY_CLIENTES, bufferId) > -1 )
 	{
 		bufferIndex = findClienteById(pListClientes, QTY_CLIENTES, bufferId);
@@ -293,16 +292,21 @@ int removeClienteConAvisos(Cliente* pListClientes, int limiteClientes, Aviso* pA
 		{
 			printf ("Este ID corresponde al siguiente cliente: \n");
 			cliente_printByIndex(pListClientes, QTY_CLIENTES, bufferIndex);
-			pListClientes[bufferIndex].isEmpty = TRUE;
 
-			for (int j = 0; j < limiteAviso ; j++)
+			if (utn_getNumero("\n¿Está seguro que desea eliminar a este cliente?\n 0- Si \n 1- No\n", "Error, ingresar una opción válida\n", &confirmacion,2,1,0) == 0)
 			{
-				if(pAviso[j].isEmpty == FALSE  &&  pListClientes[bufferIndex].idCliente == pAviso[j].idCliente)
+				for (int j = 0; j < limiteAviso ; j++)
 				{
-					pAviso[j].isEmpty = TRUE;
+					if(pAviso[j].isEmpty == FALSE  &&  pListClientes[bufferIndex].idCliente == pAviso[j].idCliente)
+					{
+						pAviso[j].isEmpty = TRUE;
+					}
 				}
+				retorno = 0;
+
+				pListClientes[bufferIndex].isEmpty = TRUE;
 			}
-			retorno = 0;
+			printf ("\nEste cliente ha sido eliminado.\n");
 		}
 		else
 		{
